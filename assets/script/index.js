@@ -137,24 +137,24 @@ gameInstructions.addEventListener("click", () => {
   showInstructions.classList.toggle("hidden");
 });
 
-// Functions
-
+// variables
 let timer;
 let seconds = 98;
 
 let counter = 0;
+let gameEvent = "stop";
 let score = 0;
-let gameStatus = "stop";
 
 // Start timer
 function startGameTimer() {
-  timer = setInterval(function () {
+  timer = setInterval(() => {
     displayTimer.innerHTML = seconds;
     seconds--;
     if (seconds < 0) {
       displayTimer.innerHTML = "0";
       displayWords.innerHTML = "Click start to play!";
       inputWords.disabled = true;
+      inputWords.value = "";
       gameAudio.pause();
       gameAudio.currentTime = 0;
       clearInterval(timer);
@@ -171,10 +171,10 @@ let shuffle = randomWords();
 
 // Start Game function
 const startGame = () => {
-  if (gameStatus === "stop") {
+  if (gameEvent === "stop") {
     gameResults.innerHTML = "Results&#129300;";
     startGameTimer();
-    gameStatus = "start";
+    gameEvent = "start";
     displayWords.innerHTML = shuffle[0];
     gameAudio.play();
     inputWords.disabled = false;
@@ -183,8 +183,8 @@ const startGame = () => {
 
 // Display next random word
 const continueWords = () => {
-  if (gameStatus === "start") {
-    score += 10;
+  if (gameEvent === "start") {
+    score += 5;
     displayScore.innerHTML = score;
     displayWords.innerHTML = shuffle[counter];
     inputWords.value = "";
@@ -201,7 +201,7 @@ const continueWords = () => {
 
 // Reset game
 const resetGame = () => {
-  if (gameStatus === "start") {
+  if (gameEvent === "start") {
     counter = 0;
     score = 0;
     gameResults.innerHTML = "Results&#129300;";
@@ -209,19 +209,19 @@ const resetGame = () => {
     seconds = 98;
     displayScore.innerHTML = "0";
     gameAudio.pause();
-    gameAudio.currentTime = 0;
     displayWords.innerHTML = "Click start to play!";
     inputWords.disabled = true;
     clearInterval(timer);
+    gameAudio.currentTime = 0;
     displayTimer.innerHTML = "99";
     shuffle = randomWords();
-    gameStatus = "stop";
+    gameEvent = "stop";
   }
 };
 
 // Validating Input
 const checkWordInput = () => {
-  if (displayWords.innerHTML === inputWords.value && gameStatus === "start") {
+  if (displayWords.innerHTML === inputWords.value && gameEvent === "start") {
     counter++;
     continueWords();
   }
@@ -229,11 +229,11 @@ const checkWordInput = () => {
 
 // Game result
 const gameResult = () => {
-  let resultScore = new Score(score, (counter / 99) * 100);
-  gameResults.innerHTML = `Your percentage ->${resultScore.percentage}<br>Correct data ->${counter}`;
+  let resultScore = new Score(score, (counter / 90) * 100);
+  gameResults.innerHTML = `Your percentage ->${resultScore.percentage} %<br>Correct words ->${counter}`;
 };
 
 // event and callback functions
 startBtn.addEventListener("click", startGame);
-resetBtn.addEventListener("click", resetGame);
 inputWords.addEventListener("input", checkWordInput);
+resetBtn.addEventListener("click", resetGame);
