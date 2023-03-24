@@ -128,7 +128,7 @@ class Score {
   }
 
   get percentage() {
-    return this.#percentage.toFixed(2);
+    return this.#percentage.toFixed(1);
   }
 }
 
@@ -144,6 +144,12 @@ let seconds = 98;
 let counter = 0;
 let gameEvent = "stop";
 let score = 0;
+
+// Shuffle display Words
+const randomWords = () => {
+  return data.sort(() => 0.5 - Math.random());
+};
+let shuffle = randomWords();
 
 // Start timer
 function startGameTimer() {
@@ -162,12 +168,6 @@ function startGameTimer() {
     }
   }, 1000);
 }
-
-// Shuffle display Words
-const randomWords = () => {
-  return data.sort(() => 0.5 - Math.random());
-};
-let shuffle = randomWords();
 
 // Start Game function
 const startGame = () => {
