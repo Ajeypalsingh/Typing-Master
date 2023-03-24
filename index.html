@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale" />
+    <meta name="author" content=" Ajaypal singh" />
+    <meta name="description" content="My web page" />
+    <meta name="keywords" content="html, css, web development, seo" />
+    <title>Keyboard Master</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter&family=Nunito&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="shortcut icon"
+      href="./assets/images/icon.png"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="./assets/style/index.css" media="all" />
+    <script src="./assets/script/index.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <h1>Keyboard Master</h1>
+      <button class="btn reset">Reset</button>
+      <button class="btn instructions">Instructions</button>
+      <div class="show hidden">
+        1. Click start button and Start typing mentioned words and play until
+        timeout.<br />
+        2. You will see your score after time over.<br />3. Click reset to play
+        again. Enjoyyy!!!
+      </div>
+      <div class="display">"Click start to play!"</div>
+    </header>
+    <main>
+      <audio src="./assets/audio/background-music.mp3"></audio>
+      <section class="left">
+        <input type="text" class="input-word" />
+        <button class="btn start">Start</button>
+      </section>
+      <section class="right">
+        <p>Timer: <span class="timer">99</span> seconds left</p>
+        <p>Score: <span class="score">0</span></p>
+        <p class="result">Results&#129300;</p>
+      </section>
+    </main>
+  </body>
+</html>
