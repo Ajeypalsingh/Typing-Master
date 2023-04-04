@@ -13,6 +13,12 @@
       href="https://fonts.googleapis.com/css2?family=Inter&family=Nunito&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alkatra:wght@500&family=Inter&family=Nunito&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="shortcut icon"
       href="./assets/images/icon.png"
@@ -24,27 +30,24 @@
   <body>
     <header>
       <h1>Typing Master</h1>
-      <button class="btn reset">Reset</button>
-      <button class="btn instructions">Instructions</button>
-      <div class="show hidden">
-        1. Click start button and Start typing mentioned words and play until
-        timeout.<br />
-        2. You will see your score after time over.<br />3. Click reset to play
-        again. Enjoyyy!!!
-      </div>
       <div class="display">"Click start to play!"</div>
     </header>
     <main>
+      <dialog class="score-dialog">
+        <h3>Score</h3>
+      </dialog>
       <audio src="./assets/audio/background-music.mp3"></audio>
-      <section class="left">
+      <div class="game">
+        <p class="emoji">&#9202;&#65039; <span class="timer">--</span></p>
+
         <input type="text" class="input-word" />
-        <button class="btn start">Start</button>
-      </section>
-      <section class="right">
-        <p>Timer: <span class="timer">99</span> seconds left</p>
-        <p>Score: <span class="score">0</span></p>
-        <p class="result">Results&#129300;</p>
-      </section>
+        <p class="sc">Hits: <span class="score">0</span></p>
+        <div class="buttons">
+          <button class="btn start">Start</button>
+          <button class="btn reset">Reset</button>
+          <button class="btn scores">Scores</button>
+        </div>
+      </div>
     </main>
   </body>
 </html>

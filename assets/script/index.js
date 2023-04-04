@@ -9,9 +9,9 @@ const inputWords = document.querySelector(".input-word");
 const startBtn = document.querySelector(".start");
 const resetBtn = document.querySelector(".reset");
 const gameAudio = document.querySelector("audio");
-const gameResults = document.querySelector(".result");
-const gameInstructions = document.querySelector(".instructions");
-const showInstructions = document.querySelector(".show");
+const body = document.querySelector("body");
+const dialog = document.querySelector(".score-dialog");
+const dialogBtn = document.querySelector(".scores");
 
 // Word Array
 
@@ -109,41 +109,28 @@ const data = [
 ];
 
 class Score {
-  #hits;
-  #percentage;
-  #date;
+  hits;
+  percentage;
+  date;
 
-  constructor(hits, percentage, _date) {
-    this.#date = Date.now();
-    this.#hits = hits;
-    this.#percentage = percentage;
-  }
-
-  get date() {
-    return this.#date;
-  }
-
-  get hits() {
-    return this.#hits;
-  }
-
-  get percentage() {
-    return this.#percentage.toFixed(1);
+  constructor(hits, percentage, date) {
+    this.hits = hits;
+    this.percentage = percentage;
+    this.date = date;
   }
 }
 
-// Game Instructions
-gameInstructions.addEventListener("click", () => {
-  showInstructions.classList.toggle("hidden");
-});
-
 // variables
 let timer;
-let seconds = 98;
-
+let seconds = 15;
+let hitList = JSON.parse(localStorage.getItem("highScores"));
+let percent;
 let counter = 0;
 let gameEvent = "stop";
 let score = 0;
+if (!hitList) {
+  hitList = [];
+}
 
 // Shuffle display Words
 const randomWords = () => {
@@ -157,6 +144,9 @@ function startGameTimer() {
     displayTimer.innerHTML = seconds;
     seconds--;
     if (seconds < 0) {
+      resetBtn.style.display = "block";
+      dialogBtn.style.display = "none";
+      startBtn.style.display = "block";
       displayTimer.innerHTML = "0";
       displayWords.innerHTML = "Click start to play!";
       inputWords.disabled = true;
@@ -164,33 +154,76 @@ function startGameTimer() {
       gameAudio.pause();
       gameAudio.currentTime = 0;
       clearInterval(timer);
-      gameResult();
+
+      const date = new Date();
+      const options = { month: "short", day: "numeric", year: "numeric" };
+      const newDate = date.toLocaleDateString("en-US", options);
+
+      percent = ((counter / data.length) * 100).toFixed(2);
+      const newScore = new Score(score, percent, newDate);
+      hitList.push(newScore);
+      hitList.splice(9);
+      const scoreToText = JSON.stringify(hitList);
+      localStorage.setItem("highScores", scoreToText);
+      generateDiv(hitList);
+      dialog.show();
     }
   }, 1000);
 }
 
+function generateDiv(arr) {
+  arr.forEach((obj) => {
+    const scoreElement = document.createElement("div");
+    scoreElement.classList.add("score-div");
+
+    scoreContent(obj, scoreElement);
+
+    dialog.appendChild(scoreElement);
+  });
+}
+
+// Create text for the provided objects values, and add them to a div
+function scoreContent(obj, el) {
+  let p1 = document.createElement("p");
+  let p2 = document.createElement("p");
+  let p3 = document.createElement("p");
+  let p4 = document.createElement("p");
+
+  p1.innerHTML = `#${hitList.indexOf(obj) + 1}`;
+  p2.innerHTML = `${obj.hits} hits`;
+  p3.innerHTML = `${obj.percentage}%`;
+  p4.innerHTML = `${obj.date}`;
+
+  el.appendChild(p1);
+  el.appendChild(p2);
+  el.appendChild(p3);
+  el.appendChild(p4);
+}
+
+dialogBtn.addEventListener("click", () => dialog.show());
+
 // Start Game function
 const startGame = () => {
   if (gameEvent === "stop") {
-    gameResults.innerHTML = "Results&#129300;";
     startGameTimer();
     gameEvent = "start";
     displayWords.innerHTML = shuffle[0];
     gameAudio.play();
     inputWords.disabled = false;
+    startBtn.style.display = "none";
+    resetBtn.style.display = "block";
   }
 };
 
 // Display next random word
 const continueWords = () => {
   if (gameEvent === "start") {
-    score += 5;
+    score += 1;
     displayScore.innerHTML = score;
     displayWords.innerHTML = shuffle[counter];
     inputWords.value = "";
 
     if (counter === 99) {
-      gameResult();
       gameAudio.pause();
       gameAudio.currentTime = 0;
       clearInterval(timer);
@@ -202,20 +235,25 @@ const continueWords = () => {
 // Reset game
 const resetGame = () => {
   if (gameEvent === "start") {
+    startBtn.style.display = "block";
+    dialogBtn.style.display = "block";
+
     counter = 0;
     score = 0;
-    gameResults.innerHTML = "Results&#129300;";
     inputWords.value = "";
-    seconds = 98;
+    seconds = 15;
     displayScore.innerHTML = "0";
     gameAudio.pause();
     displayWords.innerHTML = "Click start to play!";
     inputWords.disabled = true;
     clearInterval(timer);
     gameAudio.currentTime = 0;
-    displayTimer.innerHTML = "99";
+    displayTimer.innerHTML = "--";
     shuffle = randomWords();
     gameEvent = "stop";
+    resetBtn.style.display = "none";
+
+    dialog.close();
   }
 };
 
@@ -225,12 +263,6 @@ const checkWordInput = () => {
     counter++;
     continueWords();
   }
-};
-
-// Game result
-const gameResult = () => {
-  let resultScore = new Score(score, (counter / 90) * 100);
-  gameResults.innerHTML = `Your percentage ->${resultScore.percentage} %<br>Correct words ->${counter}`;
 };
 
 // event and callback functions
